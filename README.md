@@ -11,6 +11,6 @@ https://help.aliyun.com/zh/dashscope/developer-reference/activate-dashscope-and-
    不推荐将API-KEY直接写在代码中，会有一定的API-KEY暴露风险，实际应用中，配置的环境变量有时会出现读取不到的情况，此时将API-KEY写在代码中可以使程序正常运行。
    
 创建并获取微软Azure语音模型  
-https://portal.azure.com/?spm=5176.28103460.0.0.37623da2HKwi78#home  
+https://portal.azure.com/#home  
 1. 在Azure AI services | 语音服务 | ID | 资源管理 | 密钥和终结点 里获取你的Azure语音服务的API密钥和服务区域。
 2. 安装Azure认知服务SDK：pip install azure-cognitiveservices-speech
