@@ -1,5 +1,5 @@
 # qwen-azure-LLM
-本代码基于阿里通义千问大模型和微软Azure LLS运行
+本代码基于阿里通义千问大模型和微软Azure LLS运行  
 按照阿里官方流程  
 https://help.aliyun.com/zh/dashscope/developer-reference/activate-dashscope-and-create-an-api-key
 1. 开通DashScope灵积模型服务并创建API-KEY
