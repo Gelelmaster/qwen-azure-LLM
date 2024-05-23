@@ -52,11 +52,21 @@ def recognize_speech():
     except sr.RequestError as e:
         return False
 
+def should_exit(message):
+    # 定义一个函数判断是否收到结束指令
+    return message.lower() == '结束'
+
 messages = []
 
 while True:
     message = recognize_speech()
     messages.append({'role': Role.USER, 'content': message})
+
+    # 检查是否收到结束指令
+    if should_exit(message):
+        print("对话结束，程序即将退出。")
+        break
+
     whole_message = ''
     responses = Generation.call(Generation.Models.qwen_turbo, messages=messages, result_format='message', stream=True, incremental_output=True)
     print('通义千问:', end='')
