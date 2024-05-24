@@ -7,8 +7,8 @@ import soundfile as sf
 import speech_recognition as sr
 
 # Azure语音服务的API密钥和服务区域
-speech_key = "144b2266024a4df29a7bf25d3b65e9f0"
-service_region = "eastus"
+speech_key = "API密钥"
+service_region = "服务区域"
 
 # 初始化Azure语音服务客户端
 def text_to_speech(text):
