@@ -1,3 +1,5 @@
+# 此代码运行几次对话后会报错，暂时不能使用
+
 from dashscope import Generation
 from dashscope.api_entities.dashscope_response import Role
 from typing import List, Dict
