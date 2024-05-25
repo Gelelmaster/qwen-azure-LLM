@@ -58,7 +58,6 @@ def recognize_speech(timeout=5):
                 print("等待超时，没有检测到语音开始，请确保您已经开始说话或稍后再试。")
                 continue
 
-
 def should_exit(message):
     # 定义一个函数判断是否收到结束指令
     return message.lower() == '结束'
