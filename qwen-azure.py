@@ -5,9 +5,9 @@ import sounddevice as sd
 import soundfile as sf
 import speech_recognition as sr
 
-# Azure语音服务的API密钥和服务区域
-speech_key = "你的Azure语音服务API密钥"
-service_region = "你的服务区域"
+# 设置Azure语音服务API密钥
+speech_key = "speech_key"
+service_region = "service_region"
 
 # 初始化Azure语音服务客户端
 def text_to_speech(text):
@@ -34,23 +34,30 @@ def play_audio(file_path):
     sd.wait()  # 等待音频播放完成
 
 #语音识别转文字
-def recognize_speech():
-    # 初始化识别器
+def recognize_speech(timeout=5):
     r = sr.Recognizer()
-    with sr.Microphone() as source:
+    # 获取所有麦克风设备名称
+    devices = sr.Microphone.list_microphone_names()
+    #print("可用麦克风设备：", devices)
+    # 假设我们选择第一个设备作为默认
+    device_id = 0  # 可以根据实际情况更改  
+    with sr.Microphone(device_index=device_id) as source:
+        r.adjust_for_ambient_noise(source, duration=3)  # 调整灵敏度
         print("请说话...")
-        # 记录音频
-        audio = r.listen(source)
-    try:
-        # 使用Google Web Speech API进行识别，它对中英文混合语音有较好的支持
-        text = r.recognize_google(audio, language='zh-CN,en-US')
-        print("语音识别中...")
-        print(text)
-        return text
-    except sr.UnknownValueError:
-        return False
-    except sr.RequestError as e:
-        return False
+        while True:
+            try:
+                audio = r.listen(source, timeout=timeout, phrase_time_limit=5)  # 缩短phrase_time_limit
+                if audio is not None and len(audio.get_wav_data()) > 0:
+                    text = r.recognize_google(audio, language='zh-CN,en-US')
+                    print("语音识别中...")
+                    print(text)
+                    return text
+                else:
+                    print("没有检测到有效语音，请再次尝试。")
+            except sr.WaitTimeoutError:
+                print("等待超时，没有检测到语音开始，请确保您已经开始说话或稍后再试。")
+                continue
+
 
 def should_exit(message):
     # 定义一个函数判断是否收到结束指令
