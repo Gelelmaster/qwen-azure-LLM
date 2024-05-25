@@ -1,5 +1,6 @@
-import speech_recognition as sr
 #语音识别转文字
+import speech_recognition as sr
+
 def recognize_speech(timeout=5):
     r = sr.Recognizer()
     # 获取所有麦克风设备名称
