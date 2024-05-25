@@ -3,17 +3,19 @@ from dashscope.api_entities.dashscope_response import Role
 from recognize_speech import recognize_speech
 from text_to_speech import text_to_speech
 from play_audio import play_audio
+# 浏览器相关调用
 from website_mapping import keyword_to_url  # 导入外部文件中的字典
 from website_mapping import website_keyword
 from website_mapping import software_keyword
 from website_mapping import software_mapping
 import webbrowser
+# 打开程序等系统调用
 import os
 
-# 判断是否退出
+# 判断是否退出函数
 def should_exit(message):
      return message.lower() in {'结束','你退下吧','退下','退下吧'}
-# 打开网站
+# 打开网站函数
 def open_website(message):
     url = keyword_to_url.get(message.lower(), None)
     if url:
@@ -21,7 +23,7 @@ def open_website(message):
         webbrowser.open(url)
     else:
         print("未知的关键词，请输入有效的网站关键词。")
-# 打开程序
+# 打开程序函数
 def open_software(message):
     command = software_mapping.get(message.lower(), None)
     if command is None:
