@@ -1,8 +1,8 @@
 import azure.cognitiveservices.speech as speechsdk
 
 # API密钥
-speech_key = "144b2266024a4df29a7bf25d3b65e9f0"
-service_region = "eastus"
+speech_key = "speech_key"
+service_region = "service_region"
 # 初始化Azure语音服务客户端
 def text_to_speech(text):
     speech_config = speechsdk.SpeechConfig(subscription=speech_key, region=service_region)
