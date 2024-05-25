@@ -1,16 +1,13 @@
-# 此代码运行几次对话后会报错，暂时不能使用
-
 from dashscope import Generation
 from dashscope.api_entities.dashscope_response import Role
-from typing import List, Dict
 import azure.cognitiveservices.speech as speechsdk
 import sounddevice as sd
 import soundfile as sf
 import speech_recognition as sr
 
-# Azure语音服务的API密钥和服务区域
-speech_key = "API密钥"
-service_region = "服务区域"
+# API密钥
+speech_key = "speech_key"
+service_region = "service_region"
 
 # 初始化Azure语音服务客户端
 def text_to_speech(text):
@@ -37,65 +34,63 @@ def play_audio(file_path):
     sd.wait()  # 等待音频播放完成
 
 #语音识别转文字
-def recognize_speech():
-    # 初始化识别器
+def recognize_speech(timeout=5):
     r = sr.Recognizer()
-    with sr.Microphone() as source:
+    # 获取所有麦克风设备名称
+    devices = sr.Microphone.list_microphone_names()
+    #print("可用麦克风设备：", devices)
+    # 假设我们选择第一个设备作为默认
+    device_id = 0  # 可以根据实际情况更改  
+    with sr.Microphone(device_index=device_id) as source:
+        r.adjust_for_ambient_noise(source, duration=3)  # 调整灵敏度
         print("请说话...")
-        # 记录音频
-        audio = r.listen(source)
-    try:
-        # 使用Google Web Speech API进行识别，它对中英文混合语音有较好的支持
-        text = r.recognize_google(audio, language='zh-CN,en-US')
-        print("语音识别中...")
-        print(text)
-        return text
-    except sr.UnknownValueError:
-        return False
-    except sr.RequestError as e:
-        return False
+        while True:
+            try:
+                audio = r.listen(source, timeout=timeout, phrase_time_limit=5)  # 缩短phrase_time_limit
+                if audio is not None and len(audio.get_wav_data()) > 0:
+                    text = r.recognize_google(audio, language='zh-CN,en-US')
+                    print("语音识别中...")
+                    print(text)
+                    return text
+                else:
+                    print("没有检测到有效语音，请再次尝试。")
+            except sr.WaitTimeoutError:
+                print("等待超时，没有检测到语音开始，请确保您已经开始说话或稍后再试。")
+                continue
 
 def should_exit(message):
     # 定义一个函数判断是否收到结束指令
     return message.lower() == '结束'
 
-messages = []
-
-def listen_for_input(messages: List[Dict]) -> str:
-    #监听用户的语音输入，识别后添加至对话历史记录中并返回识别的文本
-    message = recognize_speech()
-    messages.append({'role': 'user', 'content': message})
-    return message
-
-def generate_reply(messages: List[Dict]) -> str:
-    #根据对话历史调用AI模型生成回复，将回复内容追加到对话历史并返回完整回复文本
-    responses = Generation.call(Generation.Models.qwen_turbo, messages=messages, result_format='message', stream=True, incremental_output=True)
-    whole_message = ''
-    print('通义千问:', end='')
-    for response in responses:
-        content = response.output.choices[0]['message']['content']
-        whole_message += content
-        print(content, end='')
-    print()
-    messages.append({'role': 'assistant', 'content': whole_message})
-    return whole_message
-
-def speak_reply(reply_content: str) -> None:
-    #将AI生成的文本回复转换为语音并播放
-    text_to_speech(reply_content)
-    play_audio("output.wav")
-
-def main_loop() -> None:
-    #执行主对话循环逻辑，包括监听用户输入、判断退出条件、生成及播放AI回复
+def chat_interaction():
     messages = []
     while True:
-        user_message = listen_for_input(messages)
-        # 检查是否为退出指令
-        if should_exit(user_message):
+        message = recognize_speech()
+        messages.append({'role': 'user', 'content': message})
+        
+        if should_exit(message):
             print("对话结束，程序即将退出。")
             break
-        assistant_reply = generate_reply(messages)
-        speak_reply(assistant_reply)
+
+        whole_message = ''
+        responses = Generation.call(Generation.Models.qwen_turbo, messages=messages, result_format='message', stream=True, incremental_output=True)
+        print('通义千问:', end='')
+        for response in responses:
+            content = response.output.choices[0]['message']['content'] if response.output and response.output.choices else ""
+            whole_message += content
+            print(content, end='')
+        print()
+        messages.append({'role': 'assistant', 'content': whole_message})
+        
+        text_to_speech(whole_message)
+        play_audio("output.wav")
+
+def main():
+    # 程序的入口点
+    try:
+        chat_interaction()
+    except Exception as e:
+        print(f"发生错误: {e}")
 
 if __name__ == "__main__":
-    main_loop()
+    main()
