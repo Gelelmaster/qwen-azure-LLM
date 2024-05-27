@@ -14,7 +14,7 @@ def recognize_speech(timeout=5):
         print("请说话...")
         while True:
             try:
-                audio = r.listen(source, timeout=timeout, phrase_time_limit=5)  # 缩短phrase_time_limit
+                audio = r.listen(source, timeout=timeout, phrase_time_limit=300)  # 语音输入时长为5分钟，限制每句话的最大时间
                 if audio is not None and len(audio.get_wav_data()) > 0:
                     text = r.recognize_google(audio, language='zh-CN,en-US')
                     print("语音识别中...")
