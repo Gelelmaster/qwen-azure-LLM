@@ -1,4 +1,3 @@
-#语音识别转文字
 import speech_recognition as sr
 
 def recognize_speech(timeout=5):
@@ -14,7 +13,7 @@ def recognize_speech(timeout=5):
         print("请说话...")
         while True:
             try:
-                audio = r.listen(source, timeout=timeout, phrase_time_limit=300)  # 语音输入时长为5分钟，限制每句话的最大时间
+                audio = r.listen(source, timeout=timeout, phrase_time_limit=5)  # 语音输入时长为5秒钟，限制每句话的最大时间
                 if audio is not None and len(audio.get_wav_data()) > 0:
                     try:
                         text = r.recognize_google(audio, language='zh-CN')
@@ -23,12 +22,10 @@ def recognize_speech(timeout=5):
                         return text
                     except sr.UnknownValueError:
                         print("UnknownValueError，请再次尝试。")
-                        continue
                     except sr.RequestError as e:
                         print("RequestError，请再次尝试。")
-                        continue
                 else:
                     print("没有检测到有效语音，请再次尝试。")
-                    continue
             except sr.WaitTimeoutError:
                 print("等待超时，没有检测到语音开始，请确保您已经开始说话或稍后再试。")
+                continue
