@@ -9,7 +9,8 @@ https://help.aliyun.com/zh/dashscope/developer-reference/activate-dashscope-and-
    
 5. 设置API-KEY，设置地址官方文档网址  
    https://help.aliyun.com/zh/dashscope/developer-reference/api-key-settings  
-   不推荐将API-KEY直接写在代码中，会有一定的API-KEY暴露风险，实际应用中，配置的环境变量有时会出现读取不到的情况，此时将API-KEY写在代码中可以使程序正常运行。  
+   不推荐将API-KEY直接写在代码中，会有一定的API-KEY暴露风险，实际应用中，配置的环境变量有时会出现读取不到的情况，此时将API-KEY写在代码中可以使程序正常运行。
+     
    这里以Windows为例，对当前用户添加永久性环境变量设置通义千问API-KEY：  
    ```setx DASHSCOPE_API_KEY "YOUR_DASHSCOPE_API_KEY"```
    
