@@ -16,15 +16,11 @@ https://help.aliyun.com/zh/dashscope/developer-reference/activate-dashscope-and-
 https://portal.azure.com/#home  
 1. 在Azure AI services | 语音服务 | ID | 资源管理 | 密钥和终结点 里获取你的Azure语音服务的API密钥和服务区域。
 2. 安装Azure认知服务SDK：```pip install azure-cognitiveservices-speech```
-
    之后安装一下需要用到的库：  
    ```pip install numpy```  
-  
    sounddevice库提供了简单的接口来处理音频的输入输出:  
    ```pip install sounddevice```   
-   
    安装soundfile库，用于音频文件的读写操作:  
    ```pip install soundfile```  
-   
    speech_recognition是专为语音识别设计的库。它封装了多种语音识别引擎，能够方便地将音频转换为文本:  
    ```pip install SpeechRecognition```  
